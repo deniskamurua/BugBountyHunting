@@ -1,0 +1,5 @@
+>Check domains pointing to a CNAME
+# subjack -w subdomains.txt -t 100 --timeout 30 -o results.txt -ssl
+
+> if you get a result check where the CNAME record is pointing 
+# dig domain.com

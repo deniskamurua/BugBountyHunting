@@ -1,0 +1,2 @@
+When hunting for SSRF I specifically look for features which already takes a URL parameter. Why - look for filters
+ 

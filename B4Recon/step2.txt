@@ -1,0 +1,14 @@
+[Expanding Our Attack Service]
+
+1.phase0
+
+>Dorking and searching for certain strings such as “domain.com” api_secret, api_key, apiKey, apiSecret, password, admin_password can produce some interesting results
+
+2. Phase1
+
+>Robots.txt contains a list of endpoints the website owner does & does NOT want indexed by google.
+>Use burp intruder to FUZZ for end points and robot.txt files
+>Scan for robot.txt on every subdomain
+>Fuzz for files and directories
+>after going through subdomains, the last step in this section is to go back through the main web application again and to check deeper on how the website is set up
+>The more you look, the more you learn, the more you see the more you hack.

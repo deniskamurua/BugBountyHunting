@@ -1,0 +1,8 @@
+1.Look for areas on the website which should contain protection like updating your account info
+2.what behavior do you see when sending a blank CSRF value.
+3.Did it reveal any framework information from an error?
+4. Did it reflect your changes but with a CSRF error? 
+5.Have you seen this parameter name used on other websites? 
+6.As you continue testing the website you may discover that some features have different CSRF protection. 
+7.Now consider, why? Different team?Old codebase? Perhaps a different parameter name is used and now you can hunt specifically for this parameter knowing it’s vulnerable
+

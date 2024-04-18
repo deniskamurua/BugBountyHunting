@@ -1,0 +1,4 @@
+1.These headers allow for an external website to read the contents of the website “Access-Control-Allow-Origin:” and “Access-Allow-Credentials:true” check the response.
+2.When hunting for CORS misconfigurations you can simply add “Origin:theirdomain.com” onto every request you are making and then Grep for “Access-Control-Allow-Origin”.
+3. Even if you discover a certain endpoint which does contain this header but it doesn't contain any sensitive information, spend time trying to bypass it.
+4.Try  anythingheretheirdomain.com as sometimes they will only be checking for if their domain is found

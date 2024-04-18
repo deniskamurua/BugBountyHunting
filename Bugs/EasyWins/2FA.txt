@@ -1,0 +1,6 @@
+1.Create an account
+2.Enable 2fa
+3.logout the account
+4.reset password
+5.change password
+6.then login again

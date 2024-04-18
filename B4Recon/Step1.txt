@@ -1,0 +1,91 @@
+Testing Features
+1.Register process 
+- What's required to sign up? If there's a lot of information (Name, location, bio, etc), where is this then reflected after signup?
+- Can I register with my social media account? If yes, is this implemented via some type of Oauth flow which contains tokens which I may be able to leak?
+- What social media accounts are allowed? What information do they trust from my social media profile? I once had stored XSS via importing my facebook album conveniently named “<script>alert(0)</script>”
+- What characters are allowed? Is <> “ ' allowed in my name? (at this stage, enter the XSS process testing. <script>Test may not work but <script does.)
+- What about unicode, %00, %0d. How will it react to me providing myemail%00@email.com? It may read it as myemail@email.com. Is it the same when signing up with their mobile app?
+- Can I signup using @target.com or is it blacklisted? If yes to being blacklisted, question why? Perhaps it has special privileges/features after signing up? Can you bypass this?
+- What happens if I revisit the register page after signing up? Does it redirect, and can I control this with a parameter? (Most likely yes!) What happens if I re-sign up as an authenticated user? Think about it from a developers’ perspective: they want the user to have a good experience so revisiting the register page when authenticated should redirect you. Enter the need for parameters to control where to redirect the user!
+- What parameters are used on this endpoint? Any listed in the source or javascript? Is it the same for every language type as well device? (Desktop vs mobile)
+- If applicable, what do the .js files do on this page? Perhaps the login page has a specific “login.js” file which contains more URLs. 
+https://www.youtube.com/watch?v=0jM8dDVifaI
+- What does google know about the register page? Login/register pages change often (user experience again) and Google robots indexes and remembers a LOT.
+	> site:example.com inurl:register inurl:& 
+	> site:example.com inurl:signup inurl:& 
+	> site:example.com inurl:join inurl:&.
+
+
+2. Login Process (and reset password)
+- Is there a redirect parameter used on the login page? 
+Typically the answerwill be yes as they usually want to control where to redirect the user after logging in. (User experience is key for developers!)
+- What happens if I try login with myemail%00@email.com - does it recognise it as myemail@email.com and maybe log me in?
+ If yes, try signup with my%00email@email.com and try for an account takeover.
+- Can I login with my social media account? 
+If yes, is this implemented via some type of Oauth flow which contains tokens which I may be able to leak?
+What social media accounts are allowed? Is it the same for all countries?
+- How does the mobile login flow differ to desktop? 
+Remember, user experience! Mobile websites are designed for the user to have the easiest flow as they don’t have a mouse to easily navigate.
+- When resetting your password what parameters are used?
+ Perhaps it will be vulnerable to IDOR (try inject an id!). 
+Is the host header trusted? 
+So when resetting password if I issue the reset with Host: evil.com, will it then trust this value & send it in the email? (leading to reset password token leak)
+
+3. Updating account information
+- Is there basic CSRF protection when updating your profile information? 
+If yes, how is this validated? What happens if I send a blank CSRF token, or a token with the same length.
+- Any second confirmation for changing your email/password? 
+If no, then you can chain this with XSS for account takeover.
+- How do they handle basic < > “ ' characters and where are they reflected?
+What about unicode? %09 %07 %0d%0a - These characters should be tested everywhere possible.
+- If I can input my own URL on my profile, what filtering is in place to prevent something such as javascript:alert(0)?
+ This is a key area I look for when setting up my profile.
+- Is updating my account information different on the mobile app? Most mobile apps will use an API to update information so maybe it's vulnerable to IDOR.
+- How do they handle photo/video uploads (if available)? 
+What sort of filtering is in place? Can I upload .txt even though it says only .jpg .png is allowed? 
+Do they store these files on the root domain or is it hosted elsewhere? Even if it’s stored elsewhere (example-cdn.com) check if this domain is included in the
+CSP as it may still be useful.
+- What information is available on my public profile that I can control? 
+What's in place to prevent me from entering malicious HTML in my bio for example?
+
+
+4. Developers Tools
+
+- Where is it hosted? Do they host it themselves or is it hosted on AWS (usually it is. This is important because if it is hosted on AWS then your aim
+will be to read AWS keys).
+- What tools are available for developers? Can I test a webhook event for example?
+- Can I actually see the response on any tools? If yes, focus on this as with the response we can prove impact easier if we find a bug.
+- Can I create my own application? Do the permissions work correctly? 
+- If I can create my own application, how does the login flow work for that?
+- Does the wiki/help docs reveal any information on how the API works? API docs also reveal more API endpoints!
+- Can I upload any files such as an application image? Is the filtering the same as updating my account information or is it using a different codebase?
+- Can I create a separate account on the developer site or does it share the same session from the main domain? 
+What’s the login process like if so?
+Sometimes you can login to the developer site (developer.example.com) via your main session (www.example.com) there will be some type of token exchange handled by a redirect.
+
+5. The main feature of the application
+
+- What areas of a site can I create content that's accessible to the public? Public content creates impact (more users affected from stored XSS for example).
+- Are all of the features on the main web application also available on themobile app?
+ Do they work differently? What about if I am from a differentcountry?
+- Do any features use some type of integer value? Most likely at some point, yes, so this is where IDOR tests begin.
+- What features are actually available to me, what do they do and what type of data is handled? Do multiple features all use the same data source? (forexample on a shop you may have multiple ways to select an address forshipment).
+ Which is the most key feature? Is it the same AJAX request for retrieving the same information or do different features use different endpoints?
+- Can I pay for any upgraded features? If yes test with a paid vs free account.
+Can the free account access paid without actually paying? Typically payment areas are the most missed as researchers are not happy to pay for potentially not finding an issue. 
+- What are the oldest features? 
+Research the company and look for features they were excited to release but ultimately did not work out. Perhaps from dorking around you can find old files linked to this feature which may give youa window. Old code = bugs
+- What new features do they plan on releasing? Can I find any reference to it already on their site? Follow them on twitter & signup to their newsletters.
+Stay up to date with what the company is working on so you can get a head start. A great article on that can be found here:
+https://www.jonbottarini.com/2019/06/17/using-burp-suite-match-and-replace-settings-to-escalate-your-user-privileges-and-find-hidden-features/
+- Do any features offer a privacy setting (private & public)?
+- If any features have different account level permissions (admin, moderator, user, guest) then always test the various levels of permissions. Can a guest make API calls only a moderator should be able to?
+
+
+6. Payment feature
+- What features are available if I upgrade my account? Can I access them without paying?
+- Can I use sandbox credit card details such as 4111 1111 1111 1111?
+- Do any new features typically designed to bring income in for the company bypass any of their past protections such as an identification process?
+(developers cut corners!)
+- Is it easily obtainable from a simple reflective XSS because it’s in the HTML DOM? Chain XSS to leak payment information.
+- What payment options are available for different countries? 

@@ -1,0 +1,23 @@
+1.I first test for .txt to check how strict the filter actually is (if it says only images .jpg .png .gif are allowed for example) and then move on from there.
+2. As well as this just simply uploading three different image types (.png .gif and .jpg) can give you an indication as to how they are handling uploads.
+3. For example are all photos saved as the same format regardless of the photo type we uploaded?
+4. Are they not trusting any of our input and always saving as .jpg regardless?
+5.what happens if you name the file “zseano.php/.jpg”  the code may see “.jpg” and think “ok” but the server actually writes it to the server as zseano.php and misses everything after the forward slash.
+6.Try zseano.html%0d%0a.jpg The server will see “.jpg” but because %0d%0a are newline characters it is saved as zseano.html
+7.Try smuggling xss characters in file names eg:
+filename="58832_300x300.jpg<svg onload=confirm()>"
+8.What is the developer checking for exactly and how are they handling it? Are they trusting any of our input? For example if I provide it with:
+------WebKitFormBoundaryAxbOlwnrQnLjU1j9
+Content-Disposition: form-data; name="imageupload"; filename="zseano.jpg"
+Content-Type: text/html
+9.Does the code see “.jpg” and think “Image extension, must be ok!” but trust my content-type and reflect it as Content-Type:text/html?
+10. Or does it set content-type based on the file extension? 
+11.What happens if you provide it with NO file extension (or file name!), will it default to the content-type or file extension?
+------WebKitFormBoundaryAxbOlwnrQnLjU1j9
+Content-Disposition: form-data; name="imageupload"; filename="zseano."
+Content-Type: text/html
+------WebKitFormBoundaryAxbOlwnrQnLjU1j9
+Content-Disposition: form-data; name="imageupload"; filename=".html"
+Content-Type: image/png
+<html>HTML code!</html>
+

@@ -1,0 +1,12 @@
+1. Ask yourself Has anyone else found anything and shared it publicly?
+	>Search  here:
+	https://www.google.com/?q=domain.com+vulnerability
+	https://www.hackerone.com/hacktivity
+	https://www.openbugbounty.org/
+2.Test publicly disclosed bugs to get  a starting point instantly and  an insight into the types of issues to look out for and how the site works.
+3.Get a feel of how their main web application works
+4.Test for the bug types listed  but the  overall intention is just to understand how things are working to begin with.
+5.Go  with the assumption that the website will be secure & it should be working as intended
+6.Start taking notes and answering question Create a Folder for the Program you testing then open gnote and Xmind.
+
+

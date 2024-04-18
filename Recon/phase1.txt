@@ -1,0 +1,181 @@
+[SUBDOMAIN SCRAPPING AND BRUTEFORCING]
+
+1.AMASS
+# amass enum -d domain.com
+# amass enum -active -d domain.com -p 80,443,8080
+# amass enum -passive -d example.com
+
+2.SUBFINDER
+# subfinder -d domain.com
+
+3.BBOT (pretty good)
+>full subdomain enumeration
+# bbot -t domain.com -f subdomain-enum
+>passive only
+# bbot -t domain.com -f subdomain-enum -rf passive
+>Scan everything all at once
+# bbot -t domain.com -f subdomain-enum email-enum cloud-enum web-basic -m nmap gowitness nuclei --allow-deadly
+>Subdomain + basic webscan
+# bbot -t domain.com -f subdomain-enum web-basic
+[RESULTS /home/kingpin/.bbot/ ]
+4.SUBLIST3R
+# sublist3r -d domain.com -o output.txt
+
+5.ASSETFINDER
+
+# assetfinder -subs-only
+
+6. CERTIFICATE TRANSPARENCY LOGS
+# crt domain.com 
+
+7.HTTPROBE
+>Probing for extra ports
+# cat subdomains.txt | httprobe -p http:81 -p http:3000 -p http:3001 -p https:30001 -p http:8000 -p http:8080 -p http:8443 -c 50 | tee output.txt 
+
+
+8. GITHUB-RECON
+# github-subdomains -d domain.com -t <yOUR GITHUB TOKEN> 
+# github-endpoints -d domain.com -t <github token>
+
+
+9. MANUAL RECON
+
+[~/Documents/ToolBox/github_manualRecon]
+# bash gdorkslinks.sh domain.com  {creates links for github dorking}
+
+10.SUBDOMAIN BRUTEFORCE
+# gobuster dns -d domain.com -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt (use seclists wordlists)
+
+11.DNSGEN
+> Really deep and possible gems
+# cat subdomains.txt | dnsgen -
+
+ 
+<<<<<<<<<<By now i should have a huge list of subdomains >>>>>>>>>>>>>>>
+
+
+ 
+10.DNS RESOLUTION (dnx or httpx)
+# cat sudomains.txt | dnsx -silent 
+>Print a records
+# cat domains.txt | dnsx -silent -a -resp
+>Extract subdomains from a network range
+# echo 173.0.84.0/24 | dnsx -silent -resp-only -ptr
+>Subdomains from a given ASN
+# echo AS17012 | dnsx -silent -resp-only -ptr
+
+11.DNS BRUTEFORCE
+# dnsx -silent -d domain.com -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt (use seclists wordlists)
+
+SUBDOMAIN PERMUTATION (rearanging words)
+# altdns -i subdomains.txt  -o data_output -w ~/Documents/AltdnsWordlist/words.txt -r -s results_output.txt {takes a list of subdomains}
+
+
+12.SCREEN SHOTTING
+
+# gowitness single https://domain.com 
+# gowitness file -f subdomains.txt
+
+
+
+
+[CONTENT DISCOVERY AND CRAWLING]
+
+1.WAYMORE
+
+# waymore -i example.com -mode U
+# waymore -i domain.com -f -xcc -xav -xus -xvt -l 200 -from 2022
+# cat domains.txt | waymore
+
+2.GOSPIDER
+>Single site
+# gospider -s "https://www.domain.com/" -o output -c 10 -d 1
+>Site List
+# gospider -S sites.txt -o output -c 10 -d 1
+
+3.ARJUN
+# arjun -i subdomains.txt
+
+4.KATANA
+>Javascript crawling
+# cat subdomains.txt | katana -jc >> output.txt
+# katana -u https://domain.com/
+>Depth
+# katana -u https://domain.com -d 5
+
+5.GAU
+# cat subdomains.txt | gau --threads 5 >> output.txt
+
+6.GOBUSTER
+# gobuster dir -u https://domain.com -w /usr/share/seclists/Discovery/Web-Content
+
+7.XNLINKFINDER
+# xnLinkFinder -i truthwifi.com -sf truthwifi.com
+>Taking results from waymore
+# xnlinfinder -i /root/Tools/waymore/results/target.com
+
+
+[JAVASCRIPT ANALYSIS]
+
+1.SUBJS
+# cat urls.txt | subjs
+# subjs -i urls.txt
+
+2.XNLINKFINDER
+# xnLinkFinder -i target_js.txt -sf target.com
+# xnLinkFinder -i target.com -sf target.com
+
+3.GOLINKFINDER
+[~/go/bin]
+# ./GolinkFinder -d https://www.domain.com -o output.txt
+
+4.GETJS
+[~/go/bin]
+# ./getJs --input domains.txt
+
+5.MANTRA
+>Hunt api Keys in js files
+# cat js.txt | mantra 
+use http://deobfuscate.io to 🧩 Unpacks arrays 🧩 Simplifies expressions 🧩 Beatifies the code
+
+[Beautify Javascript]
+
+# js-beautify <file.js> | tee -a <output.js>
+
+
+
+[FUZZING]
+<<<<<<------------------wordlists /usr/share/wordlists and /usr/share/seclists -------------------------->>>>>>>
+1. FFUF
+>basic
+# ffuf -ac -v -u https://truthwifi.com/FUZZ -w /usr/share/seclists/Fuzzing/fuzz-Bo0oM.txt
+>Recusion if it finds a directory it starts another scan for that directory
+# ffuf  -u http://ffuf.me/cd/basic/FUZZ -w common.txt -recursion
+>File Extension -e specifies the fileextension to be added in every FUZZ word <FUZZ.log>
+# ffuf -w ~/wordlists/common.txt -e .log -u http://ffuf.me/cd/ext/logs/FUZZ
+>Parameter mining
+# ffuf -w ~/wordlists/parameters.txt -u http://ffuf.me/cd/param/data?FUZZ=1
+>use -mc to only display a certain status code
+# ffuf -w ~/wordlists/common.txt -u http://ffuf.test/cd/rate/FUZZ -mc 200,429
+>RATE LIMITED the -p switch causes the application to pause 0.1 seconds per request and the -t switch creates 5 versions of ffuf which means a maximum of 50 requests per second.
+#  ffuf -w ~/wordlists/common.txt -t 5 -p 0.1 -u http://ffuf.test/cd/rate/FUZZ -mc 200,429
+
+2.WFUZZ
+>Basic <easy way>
+# $ wfuzz -w wordlist.txt http://testphp.vulnweb.com/FUZZ
+>defining  wordlist file
+# wfuzz -z file,wordlist/general/common.txt http://testphp.vulnweb.com/FUZZ
+  
+>Multiple payloads (-hc to hide status code)
+# wfuzz -w wordlist/general/common.txt -w wordlist/general/common.txt -w wordlist/general/extensions_common.txt --hc 404 http://testphp.vulnweb.com/FUZZ/FUZ2ZFUZ3Z
+
+>Fuzzing parameters in urls 
+# wfuzz -z range,0-10 --hl 97 http://testphp.vulnweb.com/listproducts.php?cat=FUZZ
+>Fuzzing POST request
+# wfuzz -z file,wordlist/others/common_pass.txt -d "uname=FUZZ&pass=FUZZ"  --hc 302 http://testphp.vulnweb.com/userinfo.php
+>Fuzzing cookies
+# wfuzz -z file,wordlist/general/common.txt -b cookie=FUZZ http://testphp.vulnweb.com/
+> RECURSION
+# wfuzz -z list,"admin-CVS-cgi\-bin"  -R1 http://testphp.vulnweb.com/FUZZ
+
+[RECON DONE! BY NOW I SHOULD HAVE ENOUGH DATA TO KEEP ME BUST FOR WEEKS AND THE HACKING BEGINS]

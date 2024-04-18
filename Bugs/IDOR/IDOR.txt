@@ -1,0 +1,8 @@
+1.Create two account and note how the aplication is identifying users.(user ids)
+2.Try to discover as many application features as possible, user the application as it is intended.
+        -pay close attention to functionality that return or modify user data
+3.Capture the requests via burp or zap.
+4.Change the user ids.
+5.If you find a GUID check for any leaks of this value.
+6.if you see some type of encrypted value, just try an integer! The server may process it the same.
+7.Look for PUT requests!
